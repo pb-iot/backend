@@ -1,5 +1,33 @@
 # Backend
+
+## Installation
+
+```bash
+poetry install
+```
+
+## Migrations
+
+### Create migrations
+
+```bash
+poetry run python manage.py makemigrations
+```
+
+### Apply migrations
+
+```bash
+poetry run python manage.py migrate
+```
+
+## Running application
+
+```bash
+poetry run python manage.py runserver
+```
+
 ## About
+
 ## Business requirements
 
 - [ ] komunikacja z frontem
@@ -12,7 +40,7 @@
 - [ ] model role
 - [ ] model permission
 - [ ] mdoel thing (rodzaj id)
-- [ ] model lokalizacja (id, nazwa) 
+- [ ] model lokalizacja (id, nazwa)
 - [ ] model szklarnia (id, nazwa, lokalizacja, lista urzadzen, lista uprawnionych uzytkownikow4, owner)
 - [ ] model pomiary
 - [ ] rozpoznawanie awarii
