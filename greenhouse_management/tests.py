@@ -1,6 +1,7 @@
 from django.test import TestCase
 from .models import Localization
 
+
 class LocalizationTestCase(TestCase):
 
     def create_localization(self, name="Bialystok"):
