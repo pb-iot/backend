@@ -76,6 +76,35 @@ rest_framework = ["djangorestframework (>=3.6.3)"]
 test = ["pytest (>=7.3.1)", "pytest-cov", "pytest-random-order", "coveralls", "mock", "pytz", "django-filter (>=22.1)", "pytest-django (>=4.5.2)", "djangorestframework (>=3.6.3)"]
 
 [[package]]
+name = "graphene-django-cud"
+version = "0.11.0"
+description = "Create, update and delete mutations for graphene-django"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+graphene-django = ">=3.0"
+graphene-file-upload = ">=1.2"
+
+[[package]]
+name = "graphene-file-upload"
+version = "1.3.0"
+description = "Lib for adding file upload functionality to GraphQL mutations in Graphene Django and Flask-Graphql"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+six = ">=1.11.0"
+
+[package.extras]
+all = ["Flask (>=1.0.2)", "graphene (>=2.1.2)", "Flask-Graphql (>=2.0.0)", "graphene-django (>=2.0.0)"]
+django = ["graphene-django (>=2.0.0)"]
+flask = ["Flask (>=1.0.2)", "graphene (>=2.1.2)", "Flask-Graphql (>=2.0.0)"]
+tests = ["coverage", "pytest", "pytest-cov", "pytest-django"]
+
+[[package]]
 name = "graphql-core"
 version = "3.2.3"
 description = "GraphQL implementation for Python, a port of GraphQL.js, the JavaScript reference implementation for GraphQL."
@@ -148,7 +177,7 @@ python-versions = ">=2"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "9ca7bcedd1210bdb633e4ef3d80d23f304d5d260bab20927820dd28534e65bed"
+content-hash = "8e2385f08d792f80a02354af82655097bd12108412742fd12633205ff1d18c30"
 
 [metadata.files]
 aniso8601 = []
@@ -156,6 +185,8 @@ asgiref = []
 django = []
 graphene = []
 graphene-django = []
+graphene-django-cud = []
+graphene-file-upload = []
 graphql-core = []
 graphql-relay = []
 promise = []
