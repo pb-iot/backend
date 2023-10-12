@@ -47,6 +47,7 @@ class UsersManagersTests(TestCase):
             filter(catergory=map(lambda key: 'europe' in key))
 
 
+
 class LocalizationTestCase(TestCase):
 
     def create_localization(self, name="Bialystok"):

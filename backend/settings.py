@@ -37,8 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "graphene_django",
     'greenhouse_management',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,6 +84,13 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'greenhouse_management.CustomUser'
+
+# Graphene
+# https://docs.graphene-python.org/en/latest/
+GRAPHENE = {
+    "SCHEMA": "schema.schema"
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
