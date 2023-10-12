@@ -57,18 +57,20 @@ class UpdateUser(graphene.Mutation):
     @classmethod
     def mutate(cls, root, info, input, id):
         user = CustomUser.objects.get(pk=id)
-        if info.context.user.is_superuser or info.context.user.id == id:
-            user.first_name = input.first_name if input.first_name not in ['', None] else user.first_name
-            user.last_name = input.last_name if input.last_name not in ['', None] else user.last_name
-            user.email = input.email if input.email not in ['', None] else user.email
+        if not (info.context.user.is_superuser or info.context.user.id == id):
+            raise PermissionDenied
 
-        if any(field == '' or field is not None for field in [input.is_active, input.is_superuser, input.is_staff]):
-            if info.context.user.is_superuser:
-                user.is_active = input.is_active if input.is_active not in ['', None] else user.is_active
-                user.is_superuser = input.is_superuser if input.is_superuser not in ['', None] else user.is_superuser
-                user.is_staff = input.is_staff if input.is_staff not in ['', None] else user.is_staff
-            else:
-                raise PermissionDenied
+        user.first_name = input.first_name if input.first_name not in ['', None] else user.first_name
+        user.last_name = input.last_name if input.last_name not in ['', None] else user.last_name
+        user.email = input.email if input.email not in ['', None] else user.email
+
+        if any(field == '' or field is not None for field in [input.is_active, input.is_superuser, input.is_staff])\
+                and info.context.user.is_superuser:
+            user.is_active = input.is_active if input.is_active not in ['', None] else user.is_active
+            user.is_superuser = input.is_superuser if input.is_superuser not in ['', None] else user.is_superuser
+            user.is_staff = input.is_staff if input.is_staff not in ['', None] else user.is_staff
+        else:
+            raise PermissionDenied
 
         user.save()
         return UpdateUser(user=user)
