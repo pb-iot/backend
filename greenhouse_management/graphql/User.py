@@ -1,6 +1,7 @@
 import graphene
 from graphene_django import DjangoObjectType
-
+from graphql_jwt.decorators import login_required
+import graphql_jwt
 from greenhouse_management.exceptions import PermissionDenied
 from greenhouse_management.models import *
 
@@ -55,6 +56,7 @@ class UpdateUser(graphene.Mutation):
               "'is_active', 'is_staff' and 'is_superuser' is set only by superuser."
 
     @classmethod
+    @login_required
     def mutate(cls, root, info, input, id):
         user = CustomUser.objects.get(pk=id)
         if info.context.user.is_superuser or info.context.user.id == id:
@@ -86,6 +88,7 @@ class DeleteUser(graphene.Mutation):
     __doc__ = "To delete user you need to provide 'id'."
 
     @classmethod
+    @login_required
     def mutate(cls, root, info, id):
         if info.context.user.is_superuser or info.context.user.id == id:
             user = CustomUser.objects.get(pk=id)
@@ -109,6 +112,7 @@ class ChangePassword(graphene.Mutation):
     __doc__ = "To change password provide all listed fields"
 
     @classmethod
+    @login_required
     def mutate(cls, root, info, id, old_password, new_password, repeat_password):
         if info.context.user.id == id:
             user = CustomUser.objects.get(pk=id)
@@ -127,17 +131,33 @@ class ChangePassword(graphene.Mutation):
         return ChangePassword(user=user)
 
 
+class ObtainJSONWebToken(graphql_jwt.JSONWebTokenMutation):
+    user = graphene.Field(UserType)
+
+    @classmethod
+    def resolve(cls, root, info, **kwargs):
+        if not info.context.user.is_active:
+            raise Exception("Account is not active")
+        return cls(user=info.context.user)
+
+
 class UserMutation(graphene.ObjectType):
     create_user = CreateUser.Field()
     update_user = UpdateUser.Field()
     delete_user = DeleteUser.Field()
     change_password = ChangePassword.Field()
 
+    token_auth = ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
+    revoke_token = graphql_jwt.Revoke.Field()
+
 
 class UserQuery(graphene.ObjectType):
     user = graphene.Field(UserType, id=graphene.Int(required=True))
     users = graphene.List(UserType)
 
+    @login_required
     def resolve_user(root, info, id):
         try:
             user = CustomUser.objects.get(pk=id)
@@ -149,6 +169,7 @@ class UserQuery(graphene.ObjectType):
 
         return user
 
+    @login_required
     def resolve_users(root, info):
         request_user = info.context.user
 
