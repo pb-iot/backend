@@ -83,6 +83,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'greenhouse_management.CustomUser'
 
 # Graphene
 # https://docs.graphene-python.org/en/latest/
