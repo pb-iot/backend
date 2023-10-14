@@ -82,12 +82,12 @@ class GreenHouseTestCase(TestCase):
         obj = GreenHouse.objects.create(name= name,
                                         crop_type= crop_type,
                                         location= location,
-                                        authorized_users= authorized_users,
                                         owner= owner)
+        obj.authorized_users.set(authorized_users)
         
         self.assertTrue(isinstance(obj, GreenHouse))
         self.assertTrue(GreenHouse.objects.filter(name= name, 
                                                   crop_type= crop_type,
                                                   location= location,
-                                                  authorized_users= authorized_users,
+                                                  authorized_users__in= [user_1.id, user_2.id],
                                                   owner= owner).exists())
