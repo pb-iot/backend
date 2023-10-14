@@ -30,9 +30,9 @@ class CreateUser(graphene.Mutation):
 
     user = graphene.Field(UserType)
 
-    __doc__ = "To create user provide 'firstname', 'lastname', 'email', 'password'. " \
-              "'is_active', 'is_staff' and 'is_superuser' is set in code. " \
-              "Other fields are optional."
+    __doc__ = '''To create user provide 'firstname', 'lastname', 'email', 'password'. 
+                'is_active', 'is_staff' and 'is_superuser' is set in code. 
+                Other fields are optional.'''
 
     @classmethod
     def mutate(cls, root, info, input, for_staff=False):
@@ -52,8 +52,8 @@ class UpdateUser(graphene.Mutation):
 
     user = graphene.Field(UserType)
 
-    __doc__ = "To update user change 'first_name', 'last_name', 'email'. " \
-              "'is_active', 'is_staff' and 'is_superuser' is set only by superuser."
+    __doc__ = '''To update user change 'first_name', 'last_name', 'email'. 
+                'is_active', 'is_staff' and 'is_superuser' is set only by superuser.'''
 
     @classmethod
     @login_required
