@@ -24,15 +24,15 @@ class UserInput(graphene.InputObjectType):
 
 
 class CreateUser(graphene.Mutation):
+    """To create user provide 'firstname', 'lastname', 'email', 'password'.
+        is_active', 'is_staff' and 'is_superuser' is set in code.
+        Other fields are optional."""
+
     class Arguments:
         input = UserInput(required=True)
         for_staff = graphene.Boolean()
 
     user = graphene.Field(UserType)
-
-    __doc__ = '''To create user provide 'firstname', 'lastname', 'email', 'password'. 
-                'is_active', 'is_staff' and 'is_superuser' is set in code. 
-                Other fields are optional.'''
 
     @classmethod
     def mutate(cls, root, info, input, for_staff=False):
@@ -46,14 +46,14 @@ class CreateUser(graphene.Mutation):
 
 
 class UpdateUser(graphene.Mutation):
+    """To update user change 'first_name', 'last_name', 'email'.
+        'is_active', 'is_staff' and 'is_superuser' is set only by superuser."""
+
     class Arguments:
         input = UserInput(required=True)
         id = graphene.Int(required=True)
 
     user = graphene.Field(UserType)
-
-    __doc__ = '''To update user change 'first_name', 'last_name', 'email'. 
-                'is_active', 'is_staff' and 'is_superuser' is set only by superuser.'''
 
     @classmethod
     @login_required
@@ -80,12 +80,12 @@ class UpdateUser(graphene.Mutation):
 
 
 class DeleteUser(graphene.Mutation):
+    """To delete user you need to provide 'id'."""
+
     class Arguments:
         id = graphene.Int(required=True)
 
     user = graphene.Field(UserType)
-
-    __doc__ = "To delete user you need to provide 'id'."
 
     @classmethod
     @login_required
@@ -101,6 +101,8 @@ class DeleteUser(graphene.Mutation):
 
 
 class ChangePassword(graphene.Mutation):
+    """To change password provide all listed fields"""
+
     class Arguments:
         id = graphene.Int(required=True)
         old_password = graphene.String(required=True)
@@ -108,8 +110,6 @@ class ChangePassword(graphene.Mutation):
         repeat_password = graphene.String(required=True)
 
     user = graphene.Field(UserType)
-
-    __doc__ = "To change password provide all listed fields"
 
     @classmethod
     @login_required
