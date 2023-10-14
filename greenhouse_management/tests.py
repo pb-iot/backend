@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from .models import Localization
+from .models import Localization, GreenHouse
 
 
 class UsersManagersTests(TestCase):
@@ -57,3 +57,37 @@ class LocalizationTestCase(TestCase):
         obj = self.create_localization()
         self.assertTrue(isinstance(obj, Localization))
         self.assertTrue(Localization.objects.filter(name="Bialystok").exists())
+
+
+class GreenHouseTestCase(TestCase):
+        
+    def test_greenhouse_creation(self):
+        name = "TomatoTomato"
+        crop_type = "StrrawBerries"
+        User = get_user_model()
+        owner_user =  User.objects.create_user(
+            email='owner@user.com', password='foo')
+        user_1 =  User.objects.create_user(
+            email='normal1@user.com', password='foo')
+        user_2 =  User.objects.create_user(
+            email='normal2@user.com', password='foo')
+        owner = owner_user
+        authorized_users = [user_1, user_2]
+        location = Localization.objects.create(name= "Bialystok")
+        # environment <-- add test
+        # devices <-- add test
+        # default_environment <-- add test
+        # environments <-- add test
+
+        obj = GreenHouse.objects.create(name= name,
+                                        crop_type= crop_type,
+                                        location= location,
+                                        authorized_users= authorized_users,
+                                        owner= owner)
+        
+        self.assertTrue(isinstance(obj, GreenHouse))
+        self.assertTrue(GreenHouse.objects.filter(name= name, 
+                                                  crop_type= crop_type,
+                                                  location= location,
+                                                  authorized_users= authorized_users,
+                                                  owner= owner).exists())
