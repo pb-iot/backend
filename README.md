@@ -26,6 +26,12 @@ poetry run python manage.py migrate
 poetry run python manage.py runserver
 ```
 
+## Running tests
+
+```bash
+poetry run pytest
+```
+
 ## About
 
 ## Business requirements
