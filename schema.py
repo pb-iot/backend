@@ -1,12 +1,12 @@
-import graphene
-from graphene_django import DjangoObjectType
+from greenhouse_management.graphql.User import *
 
 
-class Query(graphene.ObjectType):
-    hello = graphene.String(name=graphene.String(default_value="stranger"))
-
-    def resolve_hello(self, info, name):
-        return "Hello, " + name
+class Mutation(UserMutation, graphene.ObjectType):
+    pass
 
 
-schema = graphene.Schema(query= Query)
+class Query(UserQuery, graphene.ObjectType):
+    pass
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
