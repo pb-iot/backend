@@ -28,8 +28,18 @@ class Localization(models.Model):
 
 
 class GreenHouse(models.Model):
+    
+    class CropTypes(models.TextChoices):
+        TOMATOES = 'TT', _('Tomatoes')
+        POTATOES = 'PT', _('Potatoes')
+
+
     name = models.CharField(max_length=255)
-    crop_type = models.CharField(max_length=255)
+    crop_type = models.CharField(
+        max_length=2,
+        choices=CropTypes.choices,
+        default=CropTypes.TOMATOES,
+    )
     # environment = models.ForeignKey(Environment, 
     #                                 on_delete=models.CASCADE) <-- to consider
     #                                 )
