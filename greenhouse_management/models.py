@@ -28,11 +28,9 @@ class Localization(models.Model):
 
 
 class GreenHouse(models.Model):
-    
     class CropTypes(models.TextChoices):
-        TOMATOES = 'TT', _('Tomatoes')
-        POTATOES = 'PT', _('Potatoes')
-
+        TOMATOES = "TT", _("Tomatoes")
+        POTATOES = "PT", _("Potatoes")
 
     name = models.CharField(max_length=255)
     crop_type = models.CharField(
@@ -40,30 +38,32 @@ class GreenHouse(models.Model):
         choices=CropTypes.choices,
         default=CropTypes.TOMATOES,
     )
-    # environment = models.ForeignKey(Environment, 
+    # environment = models.ForeignKey(Environment,
     #                                 on_delete=models.CASCADE) <-- to consider
     #                                 )
-    location = models.ForeignKey(Localization, 
-                                on_delete=models.CASCADE # to consider
-                                )
+    location = models.ForeignKey(Localization, on_delete=models.CASCADE)  # to consider
     # devices = models.ManyToManyField(Device)
     authorized_users = models.ManyToManyField(CustomUser)
-    owner = models.ForeignKey(CustomUser, 
-                              on_delete=models.CASCADE, # to consider
-                              related_name="owned_greenhouses") 
-    # default_environment = models.ForeignKey(Environment, 
-                                    # on_delete=models.CASCADE, <-- to consider
-                                    # related_name="default_greenhouses") 
+    owner = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,  # to consider
+        related_name="owned_greenhouses",
+    )
+    # default_environment = models.ForeignKey(Environment,
+    # on_delete=models.CASCADE, <-- to consider
+    # related_name="default_greenhouses")
     # environments = models.ManyToManyField(Environment, related_name="greenhouses")
 
 
 class Device(models.Model):
-
-    class Functionality(models.IntegerChoices):
-        PAS = 1, "Urządzenie pasywne"
-        ACT = 2, "Urządzenie aktywne"
+    class Functionality(models.TextChoices):
+        PASSIVE = "PA", _("Passive device")
+        ACTIVE = "AC", _("Active device")
 
     name = models.CharField(max_length=100)
-    functionality = models.PositiveSmallIntegerField(
-        choices=Functionality.choices, default=1 , blank=False
+    functionality = models.CharField(
+        max_length=2,
+        choices=Functionality.choices,
+        default=Functionality.ACTIVE,
+        blank=False,
     )
