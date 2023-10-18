@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from .models import Localization, GreenHouse
+from .models import Localization, Device, GreenHouse
 
 
 class UsersManagersTests(TestCase):
@@ -105,3 +105,15 @@ class GreenHouseTestCase(TestCase):
         # Case 3: option: default should be 'Tomatoes'
         default_greenhouse = GreenHouse()
         self.assertEqual(default_greenhouse.crop_type, 'TT')
+class DeviceTestCase(TestCase):
+
+    def device_creation(self):
+        return Device.objects.create(
+            name="Wentylator",
+            functionality=2
+        )
+    def test_device(self):
+        device = self.device_creation()
+        self.assertEqual(device.name, "Wentylator")
+        functionality_choices = dict(device.Functionality.choices)
+        self.assertIn(device.functionality, functionality_choices)
