@@ -65,7 +65,6 @@ class GreenHouse(models.Model):
     # related_name="default_greenhouses")
     # environments = models.ManyToManyField(Environment, related_name="greenhouses")
     
-
 class Device(models.Model):
     class Functionality(models.TextChoices):
         PASSIVE = "PA", _("Passive device")
@@ -86,7 +85,7 @@ class Device(models.Model):
     def __str__(self):
         return self.name
     
-    
+
 class Enviroment(models.Model):
     
     date = models.DateTimeField()
