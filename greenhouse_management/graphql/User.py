@@ -6,18 +6,27 @@ from greenhouse_management.exceptions import PermissionDenied
 from greenhouse_management.models import *
 
 
-class UserType(DjangoObjectType):
+class CreateUserType(DjangoObjectType):
     class Meta:
         model = CustomUser
         fields = '__all__'
 
 
-class UserInput(graphene.InputObjectType):
+class RetrieveUserType(DjangoObjectType):
+    class Meta:
+        model = CustomUser
+        exclude = ['password',]
+
+
+class ProtectedUserInput(graphene.InputObjectType):
     email = graphene.String()
     password = graphene.String()
     last_name = graphene.String()
     first_name = graphene.String()
     date_joined = graphene.DateTime()
+
+
+class UserInput(ProtectedUserInput):
     is_superuser = graphene.Boolean()
     is_active = graphene.Boolean()
     is_staff = graphene.Boolean()
@@ -32,14 +41,28 @@ class CreateUser(graphene.Mutation):
         input = UserInput(required=True)
         for_staff = graphene.Boolean()
 
-    user = graphene.Field(UserType)
+    user = graphene.Field(CreateUserType)
+
+    @classmethod
+    def create_as_regular_user(cls, user_data):
+        permission_locked_fields = ['is_staff', 'is_superuser', 'is_active']
+        for field in permission_locked_fields:
+            user_data.pop(field, None)
+
+        user = CustomUser.objects.create_user(**user_data)
+        return user
+
+    @classmethod
+    def create_as_superuser(cls, user_data):
+        user = CustomUser.objects.create_superuser(**user_data)
+        return user
 
     @classmethod
     def mutate(cls, root, info, input, for_staff=False):
         if info.context.user.is_superuser and for_staff:
-            user = CustomUser.objects.create_superuser(**input)
+            user = cls.create_as_superuser(input)
         else:
-            user = CustomUser.objects.create_user(**input)
+            user = cls.create_as_regular_user(input)
 
         user.save()
         return CreateUser(user=user)
@@ -53,23 +76,28 @@ class UpdateUser(graphene.Mutation):
         input = UserInput(required=True)
         id = graphene.Int(required=True)
 
-    user = graphene.Field(UserType)
+    user = graphene.Field(CreateUserType)
 
     @classmethod
     @login_required
     def mutate(cls, root, info, input, id):
         user = CustomUser.objects.get(pk=id)
         if info.context.user.is_superuser or info.context.user.id == id:
-            user.first_name = input.first_name if input.first_name not in ['', None] else user.first_name
-            user.last_name = input.last_name if input.last_name not in ['', None] else user.last_name
-            user.email = input.email if input.email not in ['', None] else user.email
+            user.first_name = input.first_name if input.first_name not in [
+                '', None] else user.first_name
+            user.last_name = input.last_name if input.last_name not in [
+                '', None] else user.last_name
+            user.email = input.email if input.email not in [
+                '', None] else user.email
 
             if any(field == '' or field is not None for field in [input.is_active, input.is_superuser, input.is_staff]):
                 if info.context.user.is_superuser:
-                    user.is_active = input.is_active if input.is_active not in ['', None] else user.is_active
+                    user.is_active = input.is_active if input.is_active not in [
+                        '', None] else user.is_active
                     user.is_superuser = input.is_superuser if input.is_superuser not in ['',
                                                                                          None] else user.is_superuser
-                    user.is_staff = input.is_staff if input.is_staff not in ['', None] else user.is_staff
+                    user.is_staff = input.is_staff if input.is_staff not in [
+                        '', None] else user.is_staff
                 else:
                     raise PermissionDenied
         else:
@@ -85,7 +113,7 @@ class DeleteUser(graphene.Mutation):
     class Arguments:
         id = graphene.Int(required=True)
 
-    user = graphene.Field(UserType)
+    user = graphene.Field(CreateUserType)
 
     @classmethod
     @login_required
@@ -109,7 +137,7 @@ class ChangePassword(graphene.Mutation):
         new_password = graphene.String(required=True)
         repeat_password = graphene.String(required=True)
 
-    user = graphene.Field(UserType)
+    user = graphene.Field(CreateUserType)
 
     @classmethod
     @login_required
@@ -132,7 +160,7 @@ class ChangePassword(graphene.Mutation):
 
 
 class ObtainJSONWebToken(graphql_jwt.JSONWebTokenMutation):
-    user = graphene.Field(UserType)
+    user = graphene.Field(RetrieveUserType)
 
     @classmethod
     def resolve(cls, root, info, **kwargs):
@@ -154,8 +182,8 @@ class UserMutation(graphene.ObjectType):
 
 
 class UserQuery(graphene.ObjectType):
-    user = graphene.Field(UserType, id=graphene.Int(required=True))
-    users = graphene.List(UserType)
+    user = graphene.Field(RetrieveUserType, id=graphene.Int(required=True))
+    users = graphene.List(RetrieveUserType)
 
     @login_required
     def resolve_user(root, info, id):
