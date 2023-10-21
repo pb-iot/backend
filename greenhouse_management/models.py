@@ -25,3 +25,33 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class Localization(models.Model):
     name = models.CharField(max_length=100)
+
+
+class GreenHouse(models.Model):
+    
+    class CropTypes(models.TextChoices):
+        TOMATOES = 'TT', _('Tomatoes')
+        POTATOES = 'PT', _('Potatoes')
+
+
+    name = models.CharField(max_length=255)
+    crop_type = models.CharField(
+        max_length=2,
+        choices=CropTypes.choices,
+        default=CropTypes.TOMATOES,
+    )
+    # environment = models.ForeignKey(Environment, 
+    #                                 on_delete=models.CASCADE) <-- to consider
+    #                                 )
+    location = models.ForeignKey(Localization, 
+                                on_delete=models.CASCADE # to consider
+                                )
+    # devices = models.ManyToManyField(Device)
+    authorized_users = models.ManyToManyField(CustomUser)
+    owner = models.ForeignKey(CustomUser, 
+                              on_delete=models.CASCADE, # to consider
+                              related_name="owned_greenhouses") 
+    # default_environment = models.ForeignKey(Environment, 
+                                    # on_delete=models.CASCADE, <-- to consider
+                                    # related_name="default_greenhouses") 
+    # environments = models.ManyToManyField(Environment, related_name="greenhouses")
