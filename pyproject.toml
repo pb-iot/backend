@@ -11,6 +11,7 @@ python = "^3.11"
 Django = "^4.2.6"
 graphene-django-cud = "^0.11.0"
 django-graphql-jwt = "^0.4.0"
+django-mapbox-location-field = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest-django = "^4.5.2"

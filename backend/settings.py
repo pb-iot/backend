@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "graphene_django",
     'greenhouse_management',
     "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    "mapbox_location_field",
 ]
 
 MIDDLEWARE = [
