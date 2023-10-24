@@ -77,7 +77,6 @@ class SuperUserTests(JSONWebTokenTestCase):
             "firstName": "test",
             "lastName": "admin",
             "password": "egi8654G4",
-            "forStaff": True,
             "email": "default2@abc.com"
         }
 

@@ -33,7 +33,6 @@ class CreateUser(graphene.Mutation):
 
     class Arguments:
         input = UserInput(required=True)
-        for_staff = graphene.Boolean()
 
     user = graphene.Field(UserType)
 
@@ -52,8 +51,8 @@ class CreateUser(graphene.Mutation):
         return user
 
     @classmethod
-    def mutate(cls, root, info, input, for_staff=False):
-        if info.context.user.is_superuser and for_staff:
+    def mutate(cls, root, info, input):
+        if info.context.user.is_superuser:
             user = cls.create_as_superuser(input)
         else:
             user = cls.create_as_regular_user(input)
