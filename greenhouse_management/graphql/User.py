@@ -6,13 +6,7 @@ from greenhouse_management.exceptions import PermissionDenied
 from greenhouse_management.models import *
 
 
-class CreateUserType(DjangoObjectType):
-    class Meta:
-        model = CustomUser
-        fields = '__all__'
-
-
-class RetrieveUserType(DjangoObjectType):
+class UserType(DjangoObjectType):
     class Meta:
         model = CustomUser
         exclude = ['password',]
@@ -41,7 +35,7 @@ class CreateUser(graphene.Mutation):
         input = UserInput(required=True)
         for_staff = graphene.Boolean()
 
-    user = graphene.Field(CreateUserType)
+    user = graphene.Field(UserType)
 
     @classmethod
     def create_as_regular_user(cls, user_data):
@@ -76,7 +70,7 @@ class UpdateUser(graphene.Mutation):
         input = UserInput(required=True)
         id = graphene.Int(required=True)
 
-    user = graphene.Field(CreateUserType)
+    user = graphene.Field(UserType)
 
     @classmethod
     @login_required
@@ -113,7 +107,7 @@ class DeleteUser(graphene.Mutation):
     class Arguments:
         id = graphene.Int(required=True)
 
-    user = graphene.Field(CreateUserType)
+    user = graphene.Field(UserType)
 
     @classmethod
     @login_required
@@ -137,7 +131,7 @@ class ChangePassword(graphene.Mutation):
         new_password = graphene.String(required=True)
         repeat_password = graphene.String(required=True)
 
-    user = graphene.Field(CreateUserType)
+    user = graphene.Field(UserType)
 
     @classmethod
     @login_required
@@ -160,7 +154,7 @@ class ChangePassword(graphene.Mutation):
 
 
 class ObtainJSONWebToken(graphql_jwt.JSONWebTokenMutation):
-    user = graphene.Field(RetrieveUserType)
+    user = graphene.Field(UserType)
 
     @classmethod
     def resolve(cls, root, info, **kwargs):
@@ -182,8 +176,8 @@ class UserMutation(graphene.ObjectType):
 
 
 class UserQuery(graphene.ObjectType):
-    user = graphene.Field(RetrieveUserType, id=graphene.Int(required=True))
-    users = graphene.List(RetrieveUserType)
+    user = graphene.Field(UserType, id=graphene.Int(required=True))
+    users = graphene.List(UserType)
 
     @login_required
     def resolve_user(root, info, id):
