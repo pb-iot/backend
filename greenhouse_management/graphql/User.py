@@ -47,8 +47,10 @@ class CreateUser(graphene.Mutation):
 
     @classmethod
     def create_as_superuser(cls, user_data):
-        user = CustomUser.objects.create_superuser(**user_data)
-        return user
+        if user_data.get('is_superuser', None):
+            user_data['is_staff'] = True
+            return CustomUser.objects.create_superuser(**user_data)
+        return CustomUser.objects.create_user(**user_data)
 
     @classmethod
     def mutate(cls, root, info, input):
