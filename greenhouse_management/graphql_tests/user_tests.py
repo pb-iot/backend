@@ -11,11 +11,12 @@ create_user = '''mutation createMutation($firstName: String!, $lastName: String!
                       }
                     }'''
 
-create_superuser = '''mutation createMutation($firstName: String!, $password: String!, $forStaff: Boolean, $email: String!){
-                      createUser(input: {firstName: $firstName, password: $password, email: $email}, forStaff:$forStaff){
+create_superuser = '''mutation createMutation($firstName: String!, $password: String!, $email: String!, $isSuperuser: Boolean!, $isStaff: Boolean!){
+                      createUser(input: {firstName: $firstName, password: $password, email: $email, isSuperuser: $isSuperuser, isStaff: $isStaff}){
                         user{
                           firstName,
-                          isSuperuser
+                          isSuperuser,
+                          isStaff
                         }
                       }
                     }'''
@@ -72,13 +73,14 @@ class SuperUserTests(JSONWebTokenTestCase):
         self.user.save()
         self.client.authenticate(self.user)
 
-    def test_create_admin(self):
+    def test_create_user(self):
         variables = {
             "firstName": "test",
             "lastName": "admin",
             "password": "egi8654G4",
-            "forStaff": True,
-            "email": "default2@abc.com"
+            "email": "default2@abc.com",
+            "isSuperuser": False,
+            "isStaff": True
         }
 
         executed = self.client.execute(create_superuser, variables)
@@ -86,7 +88,29 @@ class SuperUserTests(JSONWebTokenTestCase):
             "createUser": {
                 "user": {
                     "firstName": "test",
-                    "isSuperuser": True
+                    "isSuperuser": False,
+                    "isStaff": True
+                }
+            }
+        }
+
+    def test_create_superuser(self):
+        variables = {
+            "firstName": "test",
+            "lastName": "admin",
+            "password": "egi8654G4",
+            "email": "default2@abc.com",
+            "isSuperuser": True,
+            "isStaff": False
+        }
+
+        executed = self.client.execute(create_superuser, variables)
+        assert executed.data == {
+            "createUser": {
+                "user": {
+                    "firstName": "test",
+                    "isSuperuser": True,
+                    "isStaff": True
                 }
             }
         }
@@ -198,7 +222,7 @@ class UsersTests(JSONWebTokenTestCase):
         }
         executed = self.client.execute(update_user, variables)
         assert executed.errors[0].message == \
-               'You do not have the required permissions to perform this action'
+            'You do not have the required permissions to perform this action'
 
     def test_delete_user_no_permission(self):
         variables = {
@@ -207,7 +231,7 @@ class UsersTests(JSONWebTokenTestCase):
 
         executed = self.client.execute(delete_user, variables)
         assert executed.errors[0].message == \
-               'You do not have the required permissions to perform this action'
+            'You do not have the required permissions to perform this action'
 
     def test_delete_user(self):
         variables = {
@@ -259,7 +283,7 @@ class UsersTests(JSONWebTokenTestCase):
 
         executed = self.client.execute(change_password, variables)
         assert executed.errors[0].message == \
-               'You do not have the required permissions to perform this action'
+            'You do not have the required permissions to perform this action'
 
     def test_get_user(self):
         inactive_user = CustomUser.objects.create_user(first_name="John", last_name="Doe", password="Adgvwey25f",
