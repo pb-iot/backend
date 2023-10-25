@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 
 from .managers import CustomUserManager
 
+#from mapbox_location_field.models import LocationField
+from mapbox_location_field.spatial.models import SpatialLocationField    
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("email address"), unique=True, blank=False)
@@ -23,8 +25,9 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class Localization(models.Model):
+class Location(models.Model):
     name = models.CharField(max_length=100)
+    location = SpatialLocationField()
 
 
 class GreenHouse(models.Model):
@@ -41,7 +44,7 @@ class GreenHouse(models.Model):
     # environment = models.ForeignKey(Environment,
     #                                 on_delete=models.CASCADE) <-- to consider
     #                                 )
-    location = models.ForeignKey(Localization, on_delete=models.CASCADE)  # to consider
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)  # to consider
     # devices = models.ManyToManyField(Device)
     authorized_users = models.ManyToManyField(CustomUser)
     owner = models.ForeignKey(

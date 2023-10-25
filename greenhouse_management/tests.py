@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from .models import Device, GreenHouse, Localization
+from .models import Device, GreenHouse, Location
 
 
 class UsersManagersTests(TestCase):
@@ -47,14 +47,14 @@ class UsersManagersTests(TestCase):
             filter(catergory=map(lambda key: "europe" in key))
 
 
-class LocalizationTestCase(TestCase):
-    def create_localization(self, name="Bialystok"):
-        return Localization.objects.create(name=name)
+class LocationTestCase(TestCase):
+    def create_location(self, name="Bialystok"):
+        return Location.objects.create(name=name)
 
-    def test_localization_creation(self):
-        obj = self.create_localization()
-        self.assertTrue(isinstance(obj, Localization))
-        self.assertTrue(Localization.objects.filter(name="Bialystok").exists())
+    def test_location_creation(self):
+        obj = self.create_location()
+        self.assertTrue(isinstance(obj, Location))
+        self.assertTrue(Location.objects.filter(name="Bialystok").exists())
 
 
 class GreenHouseTestCase(TestCase):
@@ -66,7 +66,7 @@ class GreenHouseTestCase(TestCase):
         user_1 = User.objects.create_user(email="normal1@user.com", password="foo")
         user_2 = User.objects.create_user(email="normal2@user.com", password="foo")
         authorized_users = [user_1, user_2]
-        location = Localization.objects.create(name="Bialystok")
+        location = Location.objects.create(name="Bialystok")
         # environment <-- add test
         # devices <-- add test
         # default_environment <-- add test
@@ -104,12 +104,12 @@ class GreenHouseTestCase(TestCase):
 
 class DeviceTestCase(TestCase):
     def device_creation(self):
-        return Device.objects.create(name="Wentylator", functionality="AC")
+        return Device.objects.create(name="Fan", functionality="AC")
 
     def test_device(self):
         device = self.device_creation()
-        self.assertEqual(device.name, "Wentylator")
+        self.assertEqual(device.name, "Fan")
         functionality_choices = dict(device.Functionality.choices)
         self.assertIn(device.functionality, functionality_choices)
         self.assertTrue(isinstance(device, Device))
-        self.assertTrue(Device.objects.filter(name="Wentylator").exists())
+        self.assertTrue(Device.objects.filter(name="Fan").exists())
