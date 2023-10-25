@@ -44,27 +44,34 @@ class UsersManagersTests(TestCase):
                 email="super@user.com", password="foo", is_superuser=False
             )
 
-            filter(catergory=map(lambda key: "europe" in key))
-
 
 class LocationTestCase(TestCase):
-    def create_location(self, name="Bialystok"):
-        return Location.objects.create(name=name)
 
-    def test_location_creation(self):
-        obj = self.create_location()
-        self.assertTrue(isinstance(obj, Location))
-        self.assertTrue(Location.objects.filter(name="Bialystok").exists())
+    def create_location(self, name="Bialystok", point=None):
+        return Location.objects.create(name=name, coordinates=point)
+
+    def test_create_location_creation(self):
+        coords = (42.12345, -71.98765)
+        created_obj = self.create_location(point=coords)
+        created_obj.save()
+        filtered_obj = Location.objects.get(id=created_obj.id)
+        
+        self.assertTrue(isinstance(filtered_obj, Location))
+        self.assertTrue(Location.objects.filter(coordinates=coords).exists())
 
 
 class GreenHouseTestCase(TestCase):
+
     def test_greenhouse_creation(self):
         name = "TomatoTomato"
         crop_type = "TT"
         User = get_user_model()
-        owner = User.objects.create_user(email="owner@user.com", password="foo")
-        user_1 = User.objects.create_user(email="normal1@user.com", password="foo")
-        user_2 = User.objects.create_user(email="normal2@user.com", password="foo")
+        owner = User.objects.create_user(
+            email='owner@user.com', password='foo')
+        user_1 = User.objects.create_user(
+            email='normal1@user.com', password='foo')
+        user_2 = User.objects.create_user(
+            email='normal2@user.com', password='foo')
         authorized_users = [user_1, user_2]
         location = Location.objects.create(name="Bialystok")
         # environment <-- add test
@@ -72,19 +79,20 @@ class GreenHouseTestCase(TestCase):
         # default_environment <-- add test
         # environments <-- add test
 
-        obj = GreenHouse.objects.create(name=name, location=location, owner=owner)
+
+        obj = GreenHouse.objects.create(name=name,
+                                        location=location,
+                                        owner=owner)
         obj.authorized_users.set(authorized_users)
 
         self.assertTrue(isinstance(obj, GreenHouse))
-        self.assertTrue(
-            GreenHouse.objects.filter(
-                name=name,
-                crop_type=crop_type,
-                location=location,
-                authorized_users__in=[user_1.id, user_2.id],
-                owner=owner,
-            ).exists()
-        )
+        self.assertTrue(GreenHouse.objects.filter(name=name,
+                                                  crop_type=crop_type,
+                                                  location=location,
+                                                  authorized_users__in=[
+                                                      user_1.id, user_2.id],
+                                                  owner=owner).exists())
+
 
     def test_crop_type_choices(self):
         # Test if crop_types contains one of available options
@@ -113,3 +121,4 @@ class DeviceTestCase(TestCase):
         self.assertIn(device.functionality, functionality_choices)
         self.assertTrue(isinstance(device, Device))
         self.assertTrue(Device.objects.filter(name="Fan").exists())
+

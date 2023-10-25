@@ -145,6 +145,19 @@ doc = ["sphinx"]
 test = ["black", "codecov", "cryptography", "flake8", "isort", "pytest", "pytest-cov", "pytest-django"]
 
 [[package]]
+name = "django-mapbox-location-field"
+version = "2.0.0"
+description = "location field with MapInput widget for picking some location"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-mapbox-location-field-2.0.0.tar.gz", hash = "sha256:ca5760eac38e5ccf230730923c99e01cee963f1f84a715d3c700c5a3607966c2"},
+]
+
+[package.dependencies]
+django = "*"
+
+[[package]]
 name = "graphene"
 version = "3.3"
 description = "GraphQL Framework for Python"
@@ -426,4 +439,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "aa8e6e5cc89dc15727a26e1f46ce7f24baf70cf5dfbb9e1642a63383179a5491"
+content-hash = "9aa21c3dac881b071f2f3aa8cda7536918d2a4c652d93991e0c71107352fef5d"
