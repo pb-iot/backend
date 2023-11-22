@@ -48,12 +48,14 @@ class UsersManagersTests(TestCase):
 
 
 class LocationTestCase(TestCase):
-    def create_location(self, name="Bialystok", point=None):
-        return Location.objects.create(name=name, coordinates=point)
+    def create_location(self, owner, name="Bialystok", point=None):
+        return Location.objects.create(name=name, coordinates=point, owner=owner)
 
     def test_create_location_creation(self):
+        User = get_user_model()
+        user = User.objects.create_user(email="normal3@user.com", password="foo")
         coords = (42.12345, -71.98765)
-        created_obj = self.create_location(point=coords)
+        created_obj = self.create_location(user, point=coords)
         created_obj.save()
         filtered_obj = Location.objects.get(id=created_obj.id)
 
