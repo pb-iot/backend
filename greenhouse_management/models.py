@@ -27,6 +27,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 class Location(models.Model):
     name = models.CharField(max_length=100)
     coordinates = LocationField()
+    owner = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return f"{self.name} - {self.coordinates}"
 
 
 class GreenHouse(models.Model):
