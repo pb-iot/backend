@@ -3,7 +3,6 @@ from graphene_django import DjangoObjectType
 from graphql_jwt.decorators import login_required
 from greenhouse_management.exceptions import PermissionDenied
 from greenhouse_management.models import *
-from graphene.types.generic import GenericScalar
 
 
 class LocationType(DjangoObjectType):
@@ -11,6 +10,8 @@ class LocationType(DjangoObjectType):
         model = Location
         fields = '__all__'
 
+    def resolve_coordinates(self, info):
+        return f"{str(self.coordinates[0])}, {str(self.coordinates[1])}"
 
 class LocationInput(graphene.InputObjectType):
     name = graphene.String()
@@ -55,7 +56,7 @@ class UpdateLocation(graphene.Mutation):
                 location.coordinates = (location.coordinates[0], input.lon)
             location.save()
         else:
-            PermissionDenied
+            raise PermissionDenied
         return UpdateLocation(location=location)
 
 
