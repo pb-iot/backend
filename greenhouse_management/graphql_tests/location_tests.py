@@ -86,8 +86,8 @@ class SuperUserTests(JSONWebTokenTestCase):
         assert executed.data == {
             "updateLocation": {
                 "location": {
-                    "name": "test",
-                    "coordinates": (20.9, 48.2)
+                    "name": "test2",
+                    "coordinates": "20.9, 48.2"
                 }
             }
         }
@@ -111,7 +111,7 @@ class SuperUserTests(JSONWebTokenTestCase):
         assert executed.data == {
             "location": {
                 "name": "test2",
-                "coordinates": (40.0, 48.2)
+                "coordinates": "40.0, 48.2"
             }
         }
 
@@ -120,7 +120,7 @@ class SuperUserTests(JSONWebTokenTestCase):
         assert executed.data == {
             "locations": [{
                 "name": "test2",
-                "coordinates": (40.0, 48.2)
+                "coordinates": "40.0, 48.2"
             }]
         }
 
@@ -149,7 +149,7 @@ class UsersTests(JSONWebTokenTestCase):
             "updateLocation": {
                 "location": {
                     "name": "changed",
-                    "coordinates": (90.0, 21.8)
+                    "coordinates": "90.0, 21.8"
                 }
             }
         }
@@ -160,7 +160,6 @@ class UsersTests(JSONWebTokenTestCase):
             "name": "changed"
         }
         executed = self.client.execute(update_location, variables)
-        print(executed)
         assert executed.errors[0].message == \
             'You do not have the required permissions to perform this action'
 
@@ -186,11 +185,10 @@ class UsersTests(JSONWebTokenTestCase):
         }
 
         executed = self.client.execute(get_location, variables)
-        print(executed)
         assert executed.data == {
             "location": {
                 "name": "test3",
-                "coordinates": (90.0, 21.8)
+                "coordinates": "90.0, 21.8"
             }
         }
 

@@ -72,7 +72,7 @@ class GreenHouseTestCase(TestCase):
         user_1 = User.objects.create_user(email="normal1@user.com", password="foo")
         user_2 = User.objects.create_user(email="normal2@user.com", password="foo")
         authorized_users = [user_1, user_2]
-        location = Location.objects.create(name="Bialystok")
+        location = Location.objects.create(name="Bialystok", coordinates=(42.12345, -71.98765), owner=user_1)
         # environment <-- add test
         # devices <-- add test
         # default_environment <-- add test

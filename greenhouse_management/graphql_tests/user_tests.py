@@ -151,7 +151,6 @@ class SuperUserTests(JSONWebTokenTestCase):
         }
 
         executed = self.client.execute(change_password, variables)
-        print(executed)
         assert executed.data == {
             "changePassword": {
                 "user": {
