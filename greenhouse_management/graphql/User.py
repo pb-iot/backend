@@ -9,15 +9,18 @@ from greenhouse_management.models import *
 class UserType(DjangoObjectType):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        exclude = ['password',]
 
 
-class UserInput(graphene.InputObjectType):
+class ProtectedUserInput(graphene.InputObjectType):
     email = graphene.String()
     password = graphene.String()
     last_name = graphene.String()
     first_name = graphene.String()
     date_joined = graphene.DateTime()
+
+
+class UserInput(ProtectedUserInput):
     is_superuser = graphene.Boolean()
     is_active = graphene.Boolean()
     is_staff = graphene.Boolean()
@@ -30,16 +33,32 @@ class CreateUser(graphene.Mutation):
 
     class Arguments:
         input = UserInput(required=True)
-        for_staff = graphene.Boolean()
 
     user = graphene.Field(UserType)
 
     @classmethod
-    def mutate(cls, root, info, input, for_staff=False):
-        if info.context.user.is_superuser and for_staff:
-            user = CustomUser.objects.create_superuser(**input)
+    def create_as_regular_user(cls, user_data):
+        permission_locked_fields = ['is_staff', 'is_superuser', 'is_active']
+        for field in permission_locked_fields:
+            user_data.pop(field, None)
+
+        user = CustomUser.objects.create_user(**user_data)
+        return user
+
+    @classmethod
+    def create_as_superuser(cls, user_data):
+        if user_data.get('is_superuser', None):
+            user_data['is_staff'] = True
+            return CustomUser.objects.create_superuser(**user_data)
+
+        return CustomUser.objects.create_user(**user_data)
+
+    @classmethod
+    def mutate(cls, root, info, input):
+        if info.context.user.is_superuser:
+            user = cls.create_as_superuser(input)
         else:
-            user = CustomUser.objects.create_user(**input)
+            user = cls.create_as_regular_user(input)
 
         user.save()
         return CreateUser(user=user)
@@ -60,16 +79,21 @@ class UpdateUser(graphene.Mutation):
     def mutate(cls, root, info, input, id):
         user = CustomUser.objects.get(pk=id)
         if info.context.user.is_superuser or info.context.user.id == id:
-            user.first_name = input.first_name if input.first_name not in ['', None] else user.first_name
-            user.last_name = input.last_name if input.last_name not in ['', None] else user.last_name
-            user.email = input.email if input.email not in ['', None] else user.email
+            user.first_name = input.first_name if input.first_name not in [
+                '', None] else user.first_name
+            user.last_name = input.last_name if input.last_name not in [
+                '', None] else user.last_name
+            user.email = input.email if input.email not in [
+                '', None] else user.email
 
             if any(field == '' or field is not None for field in [input.is_active, input.is_superuser, input.is_staff]):
                 if info.context.user.is_superuser:
-                    user.is_active = input.is_active if input.is_active not in ['', None] else user.is_active
+                    user.is_active = input.is_active if input.is_active not in [
+                        '', None] else user.is_active
                     user.is_superuser = input.is_superuser if input.is_superuser not in ['',
                                                                                          None] else user.is_superuser
-                    user.is_staff = input.is_staff if input.is_staff not in ['', None] else user.is_staff
+                    user.is_staff = input.is_staff if input.is_staff not in [
+                        '', None] else user.is_staff
                 else:
                     raise PermissionDenied
         else:

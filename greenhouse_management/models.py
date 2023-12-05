@@ -2,20 +2,21 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from mapbox_location_field.models import LocationField
 
 from .managers import CustomUserManager
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    email = models.EmailField(_('email address'), unique=True, blank=False)
+    email = models.EmailField(_("email address"), unique=True, blank=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name"]
 
     objects = CustomUserManager()
 
@@ -23,16 +24,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class Localization(models.Model):
+class Location(models.Model):
     name = models.CharField(max_length=100)
+    coordinates = LocationField()
 
 
 class GreenHouse(models.Model):
-    
     class CropTypes(models.TextChoices):
-        TOMATOES = 'TT', _('Tomatoes')
-        POTATOES = 'PT', _('Potatoes')
-
+        TOMATOES = "TT", _("Tomatoes")
+        POTATOES = "PT", _("Potatoes")
 
     name = models.CharField(max_length=255)
     crop_type = models.CharField(
@@ -40,22 +40,22 @@ class GreenHouse(models.Model):
         choices=CropTypes.choices,
         default=CropTypes.TOMATOES,
     )
-    # environment = models.ForeignKey(Environment, 
+    # environment = models.ForeignKey(Environment,
     #                                 on_delete=models.CASCADE) <-- to consider
     #                                 )
-    location = models.ForeignKey(Localization, 
-                                on_delete=models.CASCADE # to consider
-                                )
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)  # to consider
     # devices = models.ManyToManyField(Device)
     authorized_users = models.ManyToManyField(CustomUser)
-    owner = models.ForeignKey(CustomUser, 
-                              on_delete=models.CASCADE, # to consider
-                              related_name="owned_greenhouses") 
-    # default_environment = models.ForeignKey(Environment, 
-                                    # on_delete=models.CASCADE, <-- to consider
-                                    # related_name="default_greenhouses") 
+    owner = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,  # to consider
+        related_name="owned_greenhouses",
+    )
+    # default_environment = models.ForeignKey(Environment,
+    # on_delete=models.CASCADE, <-- to consider
+    # related_name="default_greenhouses")
     # environments = models.ManyToManyField(Environment, related_name="greenhouses")
-    
+
     
 class Enviroment(models.Model):
     
@@ -70,3 +70,17 @@ class Enviroment(models.Model):
     soil_temperature = models.DecimalField(max_digits=5, decimal_places=2)  
     weight_of_soil_and_plants = models.DecimalField(max_digits=5, decimal_places=2)  
     stem_micro_Variability = models.DecimalField(max_digits=5, decimal_places=2)
+
+
+class Device(models.Model):
+    class Functionality(models.TextChoices):
+        PASSIVE = "PA", _("Passive device")
+        ACTIVE = "AC", _("Active device")
+
+    name = models.CharField(max_length=100)
+    functionality = models.CharField(
+        max_length=2,
+        choices=Functionality.choices,
+        default=Functionality.ACTIVE,
+        blank=False,
+    )
