@@ -37,3 +37,8 @@ class DeviceAdmin(admin.ModelAdmin):
     display_authorized_users.short_description = 'Authorized users'
     display_owner.short_description = 'Owner'
     display_location.short_description = 'Location'
+
+
+admin.site.site_title = "GreenHouse site admin"
+admin.site.site_header = "GreenHouse administration"
+admin.site.index_title = "Site administration"
