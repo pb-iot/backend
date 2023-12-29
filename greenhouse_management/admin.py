@@ -23,7 +23,7 @@ class LocationAdmin(admin.ModelAdmin):
 
 
 @admin.register(CustomUser)
-class DeviceAdmin(admin.ModelAdmin):
+class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'date_joined', 'is_staff', 'is_active')
     list_filter = ('date_joined', 'is_staff', 'is_active')
     search_fields = ('first_name', 'last_name', 'email')
@@ -33,7 +33,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 @admin.register(GreenHouse)
-class DeviceAdmin(admin.ModelAdmin):
+class GreenHouseAdmin(admin.ModelAdmin):
     list_display = ('name', 'crop_type', 'display_location', 'display_authorized_users', 'display_owner')
     list_filter = ('crop_type', 'location__name', 'owner')
     search_fields = ('name',)
