@@ -27,6 +27,8 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'date_joined', 'is_staff', 'is_active')
     list_filter = ('date_joined', 'is_staff', 'is_active')
     search_fields = ('first_name', 'last_name', 'email')
+    readonly_fields = ('date_joined', 'last_login')
+    exclude = ('password',)
 
     class Meta:
         ordering = ('first_name', 'last_name', 'email', 'date_joined', 'is_staff', 'is_active')
@@ -34,12 +36,12 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(GreenHouse)
 class GreenHouseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'crop_type', 'display_location', 'display_authorized_users', 'display_owner')
+    list_display = ('name', 'crop_type', 'location', 'display_authorized_users', 'display_owner')
     list_filter = ('crop_type', 'location__name', 'owner')
     search_fields = ('name',)
 
     class Meta:
-        ordering = ('name', 'crop_type', 'display_location', 'display_owner')
+        ordering = ('name', 'crop_type', 'location', 'display_owner')
 
     def display_authorized_users(self, obj):
         return ', '.join(f'{user.first_name} {user.last_name}' for user in obj.authorized_users.all())
@@ -47,12 +49,8 @@ class GreenHouseAdmin(admin.ModelAdmin):
     def display_owner(self, obj):
         return f'{obj.owner.first_name} {obj.owner.last_name}'
 
-    def display_location(self, obj):
-        return obj.location.name
-
     display_authorized_users.short_description = 'Authorized users'
     display_owner.short_description = 'Owner'
-    display_location.short_description = 'Location'
 
 
 admin.site.site_title = "GreenHouse site admin"

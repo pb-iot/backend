@@ -35,6 +35,9 @@ class Location(models.Model):
     def __str__(self):
         return f"{self.name} - {self.coordinates}"
 
+    def __str__(self):
+        return f"{self.name} - {self.coordinates}"
+
 
 class GreenHouse(models.Model):
     class CropTypes(models.TextChoices):
