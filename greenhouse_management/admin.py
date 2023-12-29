@@ -3,6 +3,26 @@ from django.contrib import admin
 from greenhouse_management.models import *
 
 
+class GreenHouseInline(admin.TabularInline):
+    model = GreenHouse
+    fields = ('name', 'crop_type', 'display_authorized_users', 'display_owner')
+
+    readonly_fields = ('name', 'crop_type', 'display_authorized_users', 'display_owner')
+    can_delete = False
+    max_num = 0
+    extra = 0
+    show_change_link = True
+
+    def display_authorized_users(self, obj):
+        return ', '.join(f'{user.first_name} {user.last_name}' for user in obj.authorized_users.all())
+
+    def display_owner(self, obj):
+        return f'{obj.owner.first_name} {obj.owner.last_name}'
+
+    display_authorized_users.short_description = 'Authorized users'
+    display_owner.short_description = 'Owner'
+
+
 @admin.register(Device)
 class DeviceAdmin(admin.ModelAdmin):
     list_display = ('name', 'functionality')
@@ -17,6 +37,7 @@ class DeviceAdmin(admin.ModelAdmin):
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('name', 'coordinates')
     search_fields = ("name",)
+    inlines = [GreenHouseInline]
 
     class Meta:
         ordering = ('name',)
