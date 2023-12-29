@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-(1d@q0lncs17#_i6kyi-yp-+$0=vs5heo*9k5uvb!t+0m0fd9u'
-
+MAPBOX_KEY = os.environ.get('MAPBOX_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
