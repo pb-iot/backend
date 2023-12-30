@@ -1,11 +1,12 @@
 from greenhouse_management.graphql.User import *
+from greenhouse_management.graphql.Device import *
 
 
-class Mutation(UserMutation, graphene.ObjectType):
+class Mutation(UserMutation, DeviceMutation, graphene.ObjectType):
     pass
 
 
-class Query(UserQuery, graphene.ObjectType):
+class Query(UserQuery, DeviceQuery, graphene.ObjectType):
     pass
 
 
