@@ -69,7 +69,7 @@ class SuperUserTests(JSONWebTokenTestCase):
         self.user.save()
         self.client.authenticate(self.user)
 
-        location = Location.objects.create(name="TestLocation")
+        location = Location.objects.create(name="Bialystok", coordinates=(42.12345, -71.98765), owner=usual_user)
         greenhouse = GreenHouse.objects.create(name="TestGreenHouse", location=location, owner=usual_user)
         Device.objects.create(name="test", functionality="AC", greenhouse=greenhouse)
         Device.objects.create(name="test2", functionality="PA", greenhouse=greenhouse)
