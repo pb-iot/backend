@@ -70,9 +70,10 @@ class SuperUserTests(JSONWebTokenTestCase):
         self.client.authenticate(self.user)
 
         location = Location.objects.create(name="Bialystok", coordinates=(42.12345, -71.98765), owner=usual_user)
-        greenhouse = GreenHouse.objects.create(name="TestGreenHouse", location=location, owner=usual_user)
-        Device.objects.create(name="test", functionality="AC", greenhouse=greenhouse)
-        Device.objects.create(name="test2", functionality="PA", greenhouse=greenhouse)
+        greenhouse1 = GreenHouse.objects.create(name="TestGreenHouse1", location=location, owner=usual_user)
+        greenhouse2 = GreenHouse.objects.create(name="TestGreenHouse2", location=location, owner=usual_user)
+        Device.objects.create(name="test", functionality="AC", greenhouse=greenhouse1)
+        Device.objects.create(name="test2", functionality="PA", greenhouse=greenhouse2)
 
     def test_create_device(self):
         variables = {
@@ -89,7 +90,7 @@ class SuperUserTests(JSONWebTokenTestCase):
                     "functionality": "PA",
                     "greenhouse": {
                         "id": "1",
-                        "name": "TestGreenHouse"
+                        "name": "TestGreenHouse1"
                     }
                 }
             }
@@ -98,7 +99,8 @@ class SuperUserTests(JSONWebTokenTestCase):
     def test_update_device(self):
         variables = {
             "id": 1,
-            "name": "testUpdate"
+            "name": "testUpdate",
+            "greenhouse": "2"
         }
 
         executed = self.client.execute(update_device, variables)
@@ -108,8 +110,8 @@ class SuperUserTests(JSONWebTokenTestCase):
                     "name": "testUpdate",
                     "functionality": "AC",
                     "greenhouse": {
-                        "id": "1",
-                        "name": "TestGreenHouse"
+                        "id": "2",
+                        "name": "TestGreenHouse2"
                     }
                 }
             }
@@ -136,8 +138,8 @@ class SuperUserTests(JSONWebTokenTestCase):
                 "name": "test2",
                 "functionality": "PA",
                 "greenhouse": {
-                    "id": "1",
-                    "name": "TestGreenHouse"
+                    "id": "2",
+                    "name": "TestGreenHouse2"
                 }
             }
         }
@@ -150,14 +152,14 @@ class SuperUserTests(JSONWebTokenTestCase):
                 "functionality": "AC",
                 "greenhouse": {
                     "id": "1",
-                    "name": "TestGreenHouse"
+                    "name": "TestGreenHouse1"
                 }
             }, {
                 "name": "test2",
                 "functionality": "PA",
                 "greenhouse": {
-                    "id": "1",
-                    "name": "TestGreenHouse"
+                    "id": "2",
+                    "name": "TestGreenHouse2"
                 }
             }]
         }

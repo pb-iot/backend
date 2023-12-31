@@ -77,7 +77,11 @@ class UpdateDevice(graphene.Mutation):
             if input.greenhouse:
                 try:
                     greenhouse = GreenHouse.objects.get(id=input.greenhouse)
-                    device.greenhouse = greenhouse
+                    if info.context.user.is_superuser or info.context.user == greenhouse.owner:
+                        device.greenhouse = greenhouse
+                    else:
+                        device.greenhouse = device.greenhouse
+                        raise Exception("The user is not the owner of the selected greenhouse")
                 except GreenHouse.DoesNotExist:
                     raise Exception("Greenhouse with this credentials does not exist.")
             else:
