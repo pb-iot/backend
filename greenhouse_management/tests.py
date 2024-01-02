@@ -110,7 +110,11 @@ class GreenHouseTestCase(TestCase):
 
 class DeviceTestCase(TestCase):
     def device_creation(self):
-        return Device.objects.create(name="Fan", functionality="AC")
+        User = get_user_model()
+        owner = User.objects.create_user(email="owner@user.com", password="foo")
+        location = Location.objects.create(name="Bialystok", coordinates=(42.12345, -71.98765), owner=owner)
+        greenhouse = GreenHouse.objects.create(name="TestGreenHouse", location=location, owner=owner)
+        return Device.objects.create(name="Fan", functionality="AC", greenhouse=greenhouse)
 
     def test_device_creation(self):
         device = self.device_creation()

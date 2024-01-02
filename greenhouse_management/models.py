@@ -54,7 +54,6 @@ class GreenHouse(models.Model):
     #                                 on_delete=models.CASCADE) <-- to consider
     #                                 )
     location = models.ForeignKey(Location, on_delete=models.CASCADE)  # to consider
-    # devices = models.ManyToManyField(Device)
     authorized_users = models.ManyToManyField(CustomUser)
     owner = models.ForeignKey(
         CustomUser,
@@ -79,3 +78,10 @@ class Device(models.Model):
         default=Functionality.ACTIVE,
         blank=False,
     )
+    greenhouse = models.ForeignKey(
+        GreenHouse,
+        on_delete=models.CASCADE,
+    )
+
+    def __str__(self):
+        return self.name
