@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from datetime import datetime
 from .models import *
 
 
@@ -123,3 +124,47 @@ class DeviceTestCase(TestCase):
         self.assertIn(device.functionality, functionality_choices)
         self.assertTrue(isinstance(device, Device))
         self.assertTrue(Device.objects.filter(name="Fan").exists())
+
+
+class EnviromentTestCase(TestCase):
+    
+    def enviroment_creation(self):
+        date = datetime(2023, 10, 17)
+        temperature = 12
+        air_humidity = 60
+        light_level = 100
+        PAR = 400
+        co2_level = 500
+        soil_moisture_level = 40
+        soil_salinity = 1.5
+        soil_temperature = 20
+        weight_of_soil_and_plants = 1000
+        stem_micro_Variability = 0.02
+        
+        obj = Enviroment.objects.create(
+                                        date = date,
+                                        temperature = temperature,
+                                        air_humidity = air_humidity,
+                                        light_level = light_level,
+                                        PAR = PAR,
+                                        co2_level = co2_level,
+                                        soil_moisture_level = soil_moisture_level,
+                                        soil_salinity = soil_salinity,
+                                        soil_temperature = soil_temperature,
+                                        weight_of_soil_and_plants = weight_of_soil_and_plants,
+                                        stem_micro_Variability = stem_micro_Variability            
+        )
+        self.assertTrue(isinstance(obj, Enviroment))
+        self.assertTrue(Enviroment.objects.filter(
+                                        date = date,
+                                        temperature = temperature,
+                                        air_humidity = air_humidity,
+                                        light_level = light_level,
+                                        PAR = PAR,
+                                        co2_level = co2_level,
+                                        soil_moisture_level = soil_moisture_level,
+                                        soil_salinity = soil_salinity,
+                                        soil_temperature = soil_temperature,
+                                        weight_of_soil_and_plants = weight_of_soil_and_plants,
+                                        stem_micro_Variability = stem_micro_Variability   
+        ))
