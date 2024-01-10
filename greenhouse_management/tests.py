@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from .models import *
-
+from datetime import datetime
 
 class UsersManagersTests(TestCase):
     def test_create_user(self):
@@ -123,3 +123,34 @@ class DeviceTestCase(TestCase):
         self.assertIn(device.functionality, functionality_choices)
         self.assertTrue(isinstance(device, Device))
         self.assertTrue(Device.objects.filter(name="Fan").exists())
+
+
+class EnviromentTestCase(TestCase):
+    def create_enviroment(self, date = datetime(2023, 10, 17),        
+                                temperature = 12.0,
+                                air_humidity = 60.0,
+                                light_level = 100.0,
+                                par = 400.0,
+                                co2_level = 500.0,
+                                soil_moisture_level = 40.0,
+                                soil_salinity = 1.5,
+                                soil_temperature = 20.0,
+                                weight_of_soil_and_plants = 1000,
+                                stem_micro_Variability = 0.2 ):        
+        return Enviroment.objects.create(
+                                date = date,
+                                temperature = temperature,
+                                air_humidity = air_humidity,
+                                light_level = light_level,
+                                par = par,
+                                co2_level = co2_level,
+                                soil_moisture_level = soil_moisture_level,
+                                soil_salinity = soil_salinity,
+                                soil_temperature = soil_temperature,
+                                weight_of_soil_and_plants = weight_of_soil_and_plants,
+                                stem_micro_Variability = stem_micro_Variability )
+        
+    def test_enviroment_creation(self):
+        obj = self.create_enviroment()
+        self.assertTrue(isinstance(obj, Enviroment))
+        self.assertTrue(Enviroment.objects.get(id= obj.id)) 
