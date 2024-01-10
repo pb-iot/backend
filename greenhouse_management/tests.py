@@ -143,18 +143,18 @@ class EnviromentTestCase(TestCase):
                                 weight_of_soil_and_plants = 1000,
                                 stem_micro_Variability = 0.2 ):        
         return Enviroment.objects.create(
-                                        date = date,
-                                        temperature = temperature,
-                                        air_humidity = air_humidity,
-                                        light_level = light_level,
-                                        par = par,
-                                        co2_level = co2_level,
-                                        soil_moisture_level = soil_moisture_level,
-                                        soil_salinity = soil_salinity,
-                                        soil_temperature = soil_temperature,
-                                        weight_of_soil_and_plants = weight_of_soil_and_plants,
-                                        stem_micro_Variability = stem_micro_Variability
-        )
+                                date = date,
+                                temperature = temperature,
+                                air_humidity = air_humidity,
+                                light_level = light_level,
+                                par = par,
+                                co2_level = co2_level,
+                                soil_moisture_level = soil_moisture_level,
+                                soil_salinity = soil_salinity,
+                                soil_temperature = soil_temperature,
+                                weight_of_soil_and_plants = weight_of_soil_and_plants,
+                                stem_micro_Variability = stem_micro_Variability )
+        
     def test_enviroment_creation(self):
         obj = self.create_enviroment()
         self.assertTrue(isinstance(obj, Enviroment))
