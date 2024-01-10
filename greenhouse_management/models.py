@@ -97,5 +97,5 @@ class Enviroment(models.Model):
     soil_moisture_level = models.DecimalField(max_digits=5, decimal_places=2)  
     soil_salinity = models.DecimalField(max_digits=5, decimal_places=2)  
     soil_temperature = models.DecimalField(max_digits=5, decimal_places=2)  
-    weight_of_soil_and_plants = models.DecimalField(max_digits=5, decimal_places=2)  
+    weight_of_soil_and_plants = models.DecimalField(max_digits=8, decimal_places=2)  
     stem_micro_Variability = models.DecimalField(max_digits=5, decimal_places=2)
