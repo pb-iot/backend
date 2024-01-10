@@ -132,12 +132,12 @@ class DeviceTestCase(TestCase):
 
 class EnviromentTestCase(TestCase):
     
-    def enviroment_creation(self):
+    def test_enviroment_creation(self):
         date = datetime(2023, 10, 17)
         temperature = 12
         air_humidity = 60
         light_level = 100
-        PAR = 400
+        par = 400
         co2_level = 500
         soil_moisture_level = 40
         soil_salinity = 1.5
@@ -150,7 +150,7 @@ class EnviromentTestCase(TestCase):
                                         temperature = temperature,
                                         air_humidity = air_humidity,
                                         light_level = light_level,
-                                        PAR = PAR,
+                                        par = par,
                                         co2_level = co2_level,
                                         soil_moisture_level = soil_moisture_level,
                                         soil_salinity = soil_salinity,
@@ -164,7 +164,7 @@ class EnviromentTestCase(TestCase):
                                         temperature = temperature,
                                         air_humidity = air_humidity,
                                         light_level = light_level,
-                                        PAR = PAR,
+                                        par = par,
                                         co2_level = co2_level,
                                         soil_moisture_level = soil_moisture_level,
                                         soil_salinity = soil_salinity,

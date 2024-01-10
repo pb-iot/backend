@@ -92,7 +92,7 @@ class Enviroment(models.Model):
     temperature = models.DecimalField(max_digits=5, decimal_places=2)  
     air_humidity = models.DecimalField(max_digits=5, decimal_places=2)  
     light_level = models.DecimalField(max_digits=5, decimal_places=2)  
-    PAR = models.DecimalField(max_digits=5, decimal_places=2)  
+    par = models.DecimalField(max_digits=5, decimal_places=2)  
     co2_level = models.DecimalField(max_digits=5, decimal_places=2)  
     soil_moisture_level = models.DecimalField(max_digits=5, decimal_places=2)  
     soil_salinity = models.DecimalField(max_digits=5, decimal_places=2)  
