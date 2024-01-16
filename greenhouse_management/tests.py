@@ -3,6 +3,7 @@ from django.test import TestCase
 from .models import *
 from datetime import datetime
 
+
 class UsersManagersTests(TestCase):
     def test_create_user(self):
         User = get_user_model()
@@ -125,32 +126,38 @@ class DeviceTestCase(TestCase):
         self.assertTrue(Device.objects.filter(name="Fan").exists())
 
 
-class EnviromentTestCase(TestCase):
-    def create_enviroment(self, date = datetime(2023, 10, 17),        
-                                temperature = 12.0,
-                                air_humidity = 60.0,
-                                light_level = 100.0,
-                                par = 400.0,
-                                co2_level = 500.0,
-                                soil_moisture_level = 40.0,
-                                soil_salinity = 1.5,
-                                soil_temperature = 20.0,
-                                weight_of_soil_and_plants = 1000,
-                                stem_micro_Variability = 0.2 ):        
-        return Enviroment.objects.create(
-                                date = date,
-                                temperature = temperature,
-                                air_humidity = air_humidity,
-                                light_level = light_level,
-                                par = par,
-                                co2_level = co2_level,
-                                soil_moisture_level = soil_moisture_level,
-                                soil_salinity = soil_salinity,
-                                soil_temperature = soil_temperature,
-                                weight_of_soil_and_plants = weight_of_soil_and_plants,
-                                stem_micro_Variability = stem_micro_Variability )
-        
-    def test_enviroment_creation(self):
-        obj = self.create_enviroment()
-        self.assertTrue(isinstance(obj, Enviroment))
-        self.assertTrue(Enviroment.objects.get(id= obj.id)) 
+class EnvironmentTestCase(TestCase):
+    def create_environment(self, date=datetime(2023, 10, 17),
+                           temperature=12.0,
+                           air_humidity=60.0,
+                           light_level=100.0,
+                           par=400.0,
+                           co2_level=500.0,
+                           soil_moisture_level=40.0,
+                           soil_salinity=1.5,
+                           soil_temperature=20.0,
+                           weight_of_soil_and_plants=1000,
+                           stem_micro_variability=0.2):
+        User = get_user_model()
+        owner = User.objects.create_user(email="owner@user.com", password="foo")
+        location = Location.objects.create(name="Bialystok", coordinates=(42.12345, -71.98765), owner=owner)
+        green_house = GreenHouse.objects.create(name="Green house", location=location, owner=owner)
+
+        return Environment.objects.create(
+            green_house=green_house,
+            date=date,
+            temperature=temperature,
+            air_humidity=air_humidity,
+            light_level=light_level,
+            par=par,
+            co2_level=co2_level,
+            soil_moisture_level=soil_moisture_level,
+            soil_salinity=soil_salinity,
+            soil_temperature=soil_temperature,
+            weight_of_soil_and_plants=weight_of_soil_and_plants,
+            stem_micro_variability=stem_micro_variability)
+
+    def test_environment_creation(self):
+        obj = self.create_environment()
+        self.assertTrue(isinstance(obj, Environment))
+        self.assertTrue(Environment.objects.get(id=obj.id))
