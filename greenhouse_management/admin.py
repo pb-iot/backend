@@ -74,6 +74,15 @@ class GreenHouseAdmin(admin.ModelAdmin):
     display_owner.short_description = 'Owner'
 
 
+@admin.register(Environment)
+class EnvironmentAdmin(admin.ModelAdmin):
+    list_display = ('green_house', 'date')
+    list_filter = ('green_house',)
+
+    class Meta:
+        ordering = ('date', )
+
+
 admin.site.site_title = "GreenHouse site admin"
 admin.site.site_header = "GreenHouse administration"
 admin.site.index_title = "Site administration"
