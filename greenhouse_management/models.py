@@ -50,24 +50,20 @@ class GreenHouse(models.Model):
         choices=CropTypes.choices,
         default=CropTypes.TOMATOES,
     )
-    # environment = models.ForeignKey(Environment,
-    #                                 on_delete=models.CASCADE) <-- to consider
-    #                                 )
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)  # to consider
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     authorized_users = models.ManyToManyField(CustomUser)
     owner = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,  # to consider
         related_name="owned_greenhouses",
     )
-    # default_environment = models.ForeignKey(Environment,
-    # on_delete=models.CASCADE, <-- to consider
-    # related_name="default_greenhouses")
-    # environments = models.ManyToManyField(Environment, related_name="greenhouses")
+
+    def __str__(self):
+        return self.name
 
 
-class Enviroment(models.Model):
-    
+class Environment(models.Model):
+    green_house = models.ForeignKey(GreenHouse, on_delete=models.CASCADE)
     date = models.DateTimeField()
     temperature = models.DecimalField(max_digits=5, decimal_places=2)  
     air_humidity = models.DecimalField(max_digits=5, decimal_places=2)  
@@ -78,7 +74,7 @@ class Enviroment(models.Model):
     soil_salinity = models.DecimalField(max_digits=5, decimal_places=2)  
     soil_temperature = models.DecimalField(max_digits=5, decimal_places=2)  
     weight_of_soil_and_plants = models.DecimalField(max_digits=8, decimal_places=2)  
-    stem_micro_Variability = models.DecimalField(max_digits=5, decimal_places=2)
+    stem_micro_variability = models.DecimalField(max_digits=5, decimal_places=2)
 
 
 class Device(models.Model):
