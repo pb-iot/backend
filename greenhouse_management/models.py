@@ -58,6 +58,9 @@ class GreenHouse(models.Model):
         related_name="owned_greenhouses",
     )
 
+    def __str__(self):
+        return self.name
+
 
 class Environment(models.Model):
     green_house = models.ForeignKey(GreenHouse, on_delete=models.CASCADE)
