@@ -62,6 +62,15 @@ get_users = '''query{
                   }
                 }'''
 
+get_authenticated_user = '''query {
+                          authenticatedUser{
+                            firstName
+                            lastName
+                            email
+                          }
+                        }
+                        '''
+
 
 class SuperUserTests(JSONWebTokenTestCase):
     def setUp(self):
@@ -184,6 +193,16 @@ class SuperUserTests(JSONWebTokenTestCase):
                 "firstName": "Jane",
                 "lastName": "Doe"
             }]
+        }
+
+    def test_get_authenticated_user(self):
+        executed = self.client.execute(get_authenticated_user)
+        assert executed.data == {
+            "authenticatedUser": {
+                "firstName": "Jane",
+                "lastName": "Doe",
+                "email": "default@abc.com"
+            }
         }
 
 
