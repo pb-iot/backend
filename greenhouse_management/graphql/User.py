@@ -180,6 +180,7 @@ class UserMutation(graphene.ObjectType):
 class UserQuery(graphene.ObjectType):
     user = graphene.Field(UserType, id=graphene.Int(required=True))
     users = graphene.List(UserType)
+    authenticated_user = graphene.Field(UserType)
 
     @login_required
     def resolve_user(root, info, id):
@@ -201,3 +202,7 @@ class UserQuery(graphene.ObjectType):
             return CustomUser.objects.all()
         else:
             return CustomUser.objects.filter(is_active=True)
+
+    @login_required
+    def resolve_authenticated_user(root, info):
+        return info.context.user
