@@ -13,9 +13,10 @@ class GreenHouseType(DjangoObjectType):
 
 class GreenHouseInput(graphene.InputObjectType):
     name = graphene.String(required=True)
+    crop_type = graphene.String
+    location_id = graphene.ID
 
 class CreateGreenHouse(graphene.Mutation):
-
 
     class Arguments:
         input = GreenHouseInput(required=True)
@@ -25,9 +26,21 @@ class CreateGreenHouse(graphene.Mutation):
     @classmethod
     @login_required
     def mutate(cls, root, info, input):
-        greenhouse = GreenHouse.objects.create(name=input.name, owner=info.context.user)
+        #location = Location.objects.get(pk=input.location_id)
+
+        greenhouse = GreenHouse.objects.create(
+            name=input.name,
+            crop_type=input.crop_type,
+            #location=location,
+            owner=info.context.user
+        )
+
+        greenhouse.authorized_users.add(info.context.user)
+        greenhouse.save()
+
         return CreateGreenHouse(greenhouse=greenhouse)
     
+
 class UpdateGreenHouse(graphene.Mutation):
     class Arguments:
         input = GreenHouseInput(required=True)
@@ -42,7 +55,10 @@ class UpdateGreenHouse(graphene.Mutation):
 
         # Check if the user has permission to update the greenhouse
         if info.context.user.is_superuser or info.context.user == greenhouse.owner:
+            location = Location.objects.get(pk=input.location_id)
             greenhouse.name = input.name
+            greenhouse.crop_type = input.crop_type
+            greenhouse.location = location
             greenhouse.save()
         else:
             raise PermissionDenied
