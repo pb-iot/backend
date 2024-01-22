@@ -12,9 +12,6 @@ class GreenHouseType(DjangoObjectType):
     class Meta:
         model = GreenHouse
         fields = '__all__'
-    location = graphene.Field(LocationType)
-    owner = graphene.Field(UserType)
-    authorized_users = graphene.List(UserType)
 
 
 class CropTypeEnum(graphene.Enum):
@@ -23,9 +20,9 @@ class CropTypeEnum(graphene.Enum):
 
 
 class GreenHouseInput(graphene.InputObjectType):
-    name = graphene.String(required=True)
-    crop_type = graphene.String
-    location = graphene.ID
+    name = graphene.String()
+    crop_type = graphene.String()
+    location = graphene.ID()
     authorized_users = graphene.List(graphene.ID)
 
 
@@ -53,11 +50,15 @@ class CreateGreenHouse(graphene.Mutation):
 
         greenhouse = GreenHouse.objects.create(
             name=input.name,
-            crop_type=input.crop_type,
             location=location,
             owner=request_user
         )
 
+        if input.crop_type in CropTypeEnum:
+            greenhouse.crop_type=input.crop_type
+        else:
+            raise Exception("Crop type is not allowed.")
+        
         greenhouse.authorized_users.add(request_user)
         for authorized_user in input.authorized_users:
             try:         
@@ -86,7 +87,7 @@ class UpdateGreenHouse(graphene.Mutation):
 
         if info.context.user.is_superuser or info.context.user == greenhouse.owner:
             greenhouse.name = input.name if input.name not in ['', None] else greenhouse.name
-            greenhouse.crop_type = input.crop_type if input.crop_type not in ['', None] else greenhouse.crop_type
+            greenhouse.crop_type = input.crop_type if input.crop_type not in ['', None, not CropTypeEnum] else greenhouse.crop_type
             greenhouse.owner = greenhouse.owner
 
             if input.location:
@@ -104,7 +105,7 @@ class UpdateGreenHouse(graphene.Mutation):
 
             if input.authorized_users:
                 greenhouse.authorized_users.clear()
-                greenhouse.authorized_users.add(info.context.user)
+                greenhouse.authorized_users.add(greenhouse.owner)
                 for authorized_user in input.authorized_users:
                     try:         
                         user = CustomUser.objects.get(id=authorized_user)
@@ -146,15 +147,15 @@ class GreenHouseMutation(graphene.ObjectType):
 class GreenHouseQuery(graphene.ObjectType):
     greenhouse = graphene.Field(GreenHouseType, id=graphene.Int(required=True))
     greenhouses = graphene.List(GreenHouseType)
-
+    
     @login_required
     def resolve_greenhouse(root, info, id):
         request_user = info.context.user
         
         try:
-            greenhouse = GreenHouse.objects.get(pk=id)
-        except Location.DoesNotExist:
-            raise Exception("GreenHouse with this name does not exist.")
+            greenhouse = GreenHouse.objects.get(pk=id)    
+        except GreenHouse.DoesNotExist:
+            raise Exception("Greenhouse with this credentials does not exist.")
         
         # Check if the user has permission to access the greenhouse
         if request_user.is_superuser or request_user in greenhouse.authorized_users:
@@ -163,10 +164,10 @@ class GreenHouseQuery(graphene.ObjectType):
             raise PermissionDenied
 
     @login_required
-    def resolve_greenhouse(root, info):
+    def resolve_greenhouses(root, info):
         request_user = info.context.user
 
         if request_user.is_superuser:
-            return Location.objects.all()
+            return GreenHouse.objects.all()
         else:
-            return Location.objects.filter(owner=request_user)
+            return GreenHouse.objects.filter(owner=request_user)
