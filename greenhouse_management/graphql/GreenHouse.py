@@ -14,7 +14,7 @@ class GreenHouseType(DjangoObjectType):
         fields = '__all__'
     location = graphene.Field(LocationType)
     owner = graphene.Field(UserType)
-    authorized_users = list(graphene.Field(UserType))
+    authorized_users = graphene.List(UserType)
 
 
 class CropTypeEnum(graphene.Enum):
