@@ -6,6 +6,7 @@ from greenhouse_management.exceptions import PermissionDenied
 from greenhouse_management.graphql.Location import LocationType
 from greenhouse_management.graphql.User import UserType
 from greenhouse_management.models import *
+from django.db.models import Q
 
 
 class GreenHouseType(DjangoObjectType):
@@ -170,4 +171,5 @@ class GreenHouseQuery(graphene.ObjectType):
         if request_user.is_superuser:
             return GreenHouse.objects.all()
         else:
-            return GreenHouse.objects.filter(owner=request_user)
+            return GreenHouse.objects.filter(Q(green_house__owner=request_user) |
+                                             Q(green_house__authorized_users=request_user))
