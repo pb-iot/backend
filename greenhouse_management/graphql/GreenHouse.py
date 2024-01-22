@@ -97,8 +97,7 @@ class UpdateGreenHouse(graphene.Mutation):
                     if info.context.user.is_superuser or info.context.user == location.owner:
                         greenhouse.location = location
                     else:
-                        greenhouse.location = greenhouse.location
-                        raise Exception("The user is not the owner of the selected location")
+                        raise PermissionDenied
                 except Location.DoesNotExist:
                     raise Exception("Location with this credentials does not exist.")
             else:
@@ -158,7 +157,6 @@ class GreenHouseQuery(graphene.ObjectType):
         except GreenHouse.DoesNotExist:
             raise Exception("Greenhouse with this credentials does not exist.")
         
-        # Check if the user has permission to access the greenhouse
         if request_user.is_superuser or request_user in greenhouse.authorized_users:
             return greenhouse
         else:
