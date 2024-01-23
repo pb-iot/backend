@@ -55,7 +55,7 @@ class CreateGreenHouse(graphene.Mutation):
             owner=request_user
         )
 
-        if input.crop_type in CropTypeEnum:
+        if input.crop_type in in [e.value for e in CropTypeEnum]:
             greenhouse.crop_type=input.crop_type
         else:
             raise Exception("Crop type is not allowed.")
