@@ -157,7 +157,7 @@ class GreenHouseQuery(graphene.ObjectType):
         except GreenHouse.DoesNotExist:
             raise Exception("Greenhouse with this credentials does not exist.")
         
-        if request_user.is_superuser or request_user in greenhouse.authorized_users:
+        if request_user.is_superuser or greenhouse.authorized_users.filter(id=request_user.id).exists():
             return greenhouse
         else:
             raise PermissionDenied
@@ -169,5 +169,4 @@ class GreenHouseQuery(graphene.ObjectType):
         if request_user.is_superuser:
             return GreenHouse.objects.all()
         else:
-            return GreenHouse.objects.filter(Q(green_house__owner=request_user) |
-                                             Q(green_house__authorized_users=request_user))
+            return GreenHouse.objects.filter(Q(authorized_users=request_user))
