@@ -105,8 +105,8 @@ AUTHENTICATION_BACKENDS = [
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
-    "JWT_EXPIRATION_DELTA": timedelta(minutes=15),
-    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
+    "JWT_EXPIRATION_DELTA": timedelta(minutes=int(os.environ.get('JWT_EXPIRATION_DELTA_MINUTES', '15'))),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=int(os.environ.get('JWT_REFRESH_EXPIRATION_DELTA_DAYS', '7'))),
 }
 
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost,http://localhost:8000').split(',')
